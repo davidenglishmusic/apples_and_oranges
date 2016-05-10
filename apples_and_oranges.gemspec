@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_dependency 'rmagick', '~> 2.15.4'
+  s.add_dependency 'capybara-screenshot', '~> 1.0.12'
 
   s.add_development_dependency 'rspec', '~> 3.0'
 end

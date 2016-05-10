@@ -4,6 +4,16 @@ class ApplesAndOranges
   PATH_REGEX = Regexp.new('/spec/(.*).rb')
   LINE_REGEX = Regexp.new(':(.+)')
 
+  @@screenshot_driver = :default
+
+  def self.screenshot_driver
+    @@screenshot_driver
+  end
+
+  def self.screenshot_driver=(value)
+    @@screenshot_driver = value
+  end
+
   def self.compare_screenshots(example)
     p
     if screenshot_exists?(example)
@@ -29,7 +39,7 @@ class ApplesAndOranges
   end
 
   def determine_screenshot_path(example)
-    'spec/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
+    'spec/fixtures/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
       example.location.match(LINE_REGEX)[1] + '.jpg'
   end
 end

@@ -8,7 +8,7 @@ RSpec.describe ApplesAndOranges do
     it 'constructs the screenshot path from the example object' do
       fruit = ApplesAndOranges.new
       example = Struct::Example.new('./spec/mozart/die_zauberflote_spec.rb:7')
-      expect(fruit.determine_screenshot_path(example)).to eq 'spec/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
+      expect(fruit.determine_screenshot_path(example)).to eq 'spec/fixtures/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
     end
   end
 
@@ -39,6 +39,17 @@ RSpec.describe ApplesAndOranges do
       fruit = ApplesAndOranges.new
       example = Struct::Example.new('./spec/mozart/mozart_spec.rb:15')
       expect(fruit.screenshot_exists?(example)).to eq false
+    end
+  end
+
+  describe '#screenshot_driver' do
+    it 'returns the default symbol unless another driver has been set' do
+      expect(ApplesAndOranges.screenshot_driver).to eq :default
+    end
+
+    it 'returns a different symbol if the driver has changed' do
+      ApplesAndOranges.screenshot_driver = :poltergeist
+      expect(ApplesAndOranges.screenshot_driver).to eq :poltergeist
     end
   end
 end
