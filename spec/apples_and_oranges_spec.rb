@@ -1,12 +1,14 @@
 require 'apples_and_oranges'
 
 RSpec.describe ApplesAndOranges do
+
+  Struct.new('Example', :location)
+
   describe '#determine_screenshot_path' do
     it 'constructs the screenshot path from the example object' do
       fruit = ApplesAndOranges.new
-      Struct.new('Example', :location)
       example = Struct::Example.new('./spec/mozart/die_zauberflote_spec.rb:7')
-      expect(fruit.determine_screenshot_path(example)).to eq '/spec/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
+      expect(fruit.determine_screenshot_path(example)).to eq 'spec/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
     end
   end
 
@@ -23,6 +25,20 @@ RSpec.describe ApplesAndOranges do
       example_screenshot = 'spec/fixtures/mozart-right.png'
       baseline_screenshot = 'spec/fixtures/mozart-left.png'
       expect(fruit.do_comparison(example_screenshot, baseline_screenshot)).to eq false
+    end
+  end
+
+  describe '#screenshot_exists?' do
+    it 'confirms that the screenshot exists' do
+      fruit = ApplesAndOranges.new
+      example = Struct::Example.new('./spec/mozart/mozart_spec.rb:9')
+      expect(fruit.screenshot_exists?(example)).to eq true
+    end
+
+    it 'acknowledges when a screenshot does not exist' do
+      fruit = ApplesAndOranges.new
+      example = Struct::Example.new('./spec/mozart/mozart_spec.rb:15')
+      expect(fruit.screenshot_exists?(example)).to eq false
     end
   end
 end

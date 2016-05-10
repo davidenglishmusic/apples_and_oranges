@@ -16,6 +16,7 @@ class ApplesAndOranges
   end
 
   def screenshot_exists?(example)
+    File.exist? determine_screenshot_path(example)
   end
 
   def generate_screenshot(example)
@@ -28,7 +29,7 @@ class ApplesAndOranges
   end
 
   def determine_screenshot_path(example)
-    '/spec/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
+    'spec/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
       example.location.match(LINE_REGEX)[1] + '.jpg'
   end
 end
