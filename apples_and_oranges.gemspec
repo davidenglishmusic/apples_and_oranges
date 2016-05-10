@@ -9,5 +9,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/davidenglishmusic/apples_and_oranges'
   s.license     = 'MIT'
 
+  s.add_dependency 'rmagick', '~> 2.15.4'
+
   s.add_development_dependency 'rspec', '~> 3.0'
 end
