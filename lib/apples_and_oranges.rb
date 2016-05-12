@@ -4,17 +4,7 @@ class ApplesAndOranges
   PATH_REGEX = Regexp.new('/spec/(.*).rb')
   LINE_REGEX = Regexp.new(':(.+)')
 
-  @@screenshot_driver = :default
-
-  def self.screenshot_driver
-    @@screenshot_driver
-  end
-
-  def self.screenshot_driver=(value)
-    @@screenshot_driver = value
-  end
-
-  def self.compare_screenshots(example)
+  def compare_screenshots(example)
     p
     if screenshot_exists?(example)
       do_comparison(example)
@@ -29,7 +19,8 @@ class ApplesAndOranges
     File.exist? determine_screenshot_path(example)
   end
 
-  def generate_screenshot(example)
+  def generate_screenshot(page, path)
+    Capybara::Screenshot.registered_drivers.fetch(Capybara.default_driver).call(page.driver, path)
   end
 
   def do_comparison(example_screenshot, baseline_screenshot)
