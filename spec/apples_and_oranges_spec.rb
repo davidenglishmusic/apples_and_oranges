@@ -13,14 +13,14 @@ RSpec.describe ApplesAndOranges do
   Struct.new('Example', :location)
 
   before(:all) do
-    @fruit = ApplesAndOranges.new
+    @grocer = ApplesAndOranges.new
   end
 
   describe '#determine_screenshot_path' do
     it 'constructs the screenshot path from the example object' do
 
       example = Struct::Example.new('./spec/mozart/die_zauberflote_spec.rb:7')
-      expect(@fruit.determine_screenshot_path(example)).to eq 'spec/fixtures/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
+      expect(@grocer.determine_screenshot_path(example)).to eq 'spec/fixtures/ao_screenshots/mozart/die_zauberflote_spec_ao_screenshot_7.jpg'
     end
   end
 
@@ -28,25 +28,25 @@ RSpec.describe ApplesAndOranges do
     it 'confirms that two identical images are the same' do
       example_screenshot = 'spec/fixtures/mozart-left-1.png'
       baseline_screenshot = 'spec/fixtures/mozart-left.png'
-      expect(@fruit.do_comparison(example_screenshot, baseline_screenshot)).to eq true
+      expect(@grocer.do_comparison(example_screenshot, baseline_screenshot)).to eq true
     end
 
     it 'acknowledges when two images are different' do
       example_screenshot = 'spec/fixtures/mozart-right.png'
       baseline_screenshot = 'spec/fixtures/mozart-left.png'
-      expect(@fruit.do_comparison(example_screenshot, baseline_screenshot)).to eq false
+      expect(@grocer.do_comparison(example_screenshot, baseline_screenshot)).to eq false
     end
   end
 
   describe '#screenshot_exists?' do
     it 'confirms that the screenshot exists' do
       example = Struct::Example.new('./spec/mozart/mozart_spec.rb:9')
-      expect(@fruit.screenshot_exists?(example)).to eq true
+      expect(@grocer.screenshot_exists?(example)).to eq true
     end
 
     it 'acknowledges when a screenshot does not exist' do
       example = Struct::Example.new('./spec/mozart/mozart_spec.rb:15')
-      expect(@fruit.screenshot_exists?(example)).to eq false
+      expect(@grocer.screenshot_exists?(example)).to eq false
     end
   end
 
@@ -56,9 +56,34 @@ RSpec.describe ApplesAndOranges do
       test_page = File.absolute_path("spec/fixtures/pages/index.html")
       visit('file://' + test_page)
       path = 'spec/fixtures/screenshots/test.jpg'
-      @fruit.generate_screenshot(page, path)
+      @grocer.generate_screenshot(page, path)
       expect(File.exist?('spec/fixtures/screenshots/test.jpg')).to eq true
       File.delete('spec/fixtures/screenshots/test.jpg')
+    end
+  end
+
+  describe '#folder_exists?' do
+    it 'checks if a folder exists' do
+      example = Struct::Example.new('./spec/mozart/die_zauberflote_spec.rb:10')
+      expect(@grocer.folder_exists?(example)).to eq true
+    end
+
+    it 'checks if a folder exists' do
+      example = Struct::Example.new('./spec/wolfgang/die_zauberflote_spec.rb:15')
+      expect(@grocer.folder_exists?(example)).to eq false
+    end
+  end
+
+  describe '#create_folder' do
+    it 'does nothing if the folder already exists' do
+      example = Struct::Example.new('./spec/mozart/die_zauberflote_spec.rb:10')
+      expect(@grocer.create_folder(example)).to eq false
+    end
+
+    it 'creates a folder if it does not exist' do
+      example = Struct::Example.new('./spec/da_ponte/cosi_fan_tutte_spec.rb:10')
+      expect(@grocer.create_folder(example)).to eq true
+      Dir.rmdir('spec/fixtures/ao_screenshots/da_ponte')
     end
   end
 end
