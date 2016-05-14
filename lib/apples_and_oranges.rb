@@ -6,12 +6,18 @@ class ApplesAndOranges
   LINE_REGEX = Regexp.new(':(.+)')
   FOLDER_REGEX = Regexp.new('^.*\/\s*')
 
-  def compare_screenshots(example)
+  def check_screenshot(page, example)
     if screenshot_exists?(example)
-      do_comparison(example)
+      baseline_screenshot_path = determine_screenshot_path(example)
+      example_screenshot_path = determine_screenshot_path(example, true)
+      generate_screenshot(page, example_screenshot_path)
+      result = do_comparison(baseline_screenshot_path, example_screenshot_path)
+      FileUtils.rm(example_screenshot_path)
+      result
     else
       puts 'no screenshot found - generating...'
-      generate_screenshot(example)
+      path = determine_screenshot_path(example)
+      generate_screenshot(page, path)
       false
     end
   end
@@ -24,15 +30,17 @@ class ApplesAndOranges
     Capybara::Screenshot.registered_drivers.fetch(Capybara.default_driver).call(page.driver, path)
   end
 
-  def do_comparison(example_screenshot, baseline_screenshot)
-    apple = Magick::Image.read(example_screenshot).first.export_pixels.join
-    orange = Magick::Image.read(baseline_screenshot).first.export_pixels.join
+  def do_comparison(baseline_screenshot_path, example_screenshot_path)
+    apple = Magick::Image.read(example_screenshot_path).first.export_pixels.join
+    orange = Magick::Image.read(baseline_screenshot_path).first.export_pixels.join
     Digest::MD5.hexdigest(apple) == Digest::MD5.hexdigest(orange)
   end
 
-  def determine_screenshot_path(example)
-    'spec/fixtures/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
-      example.location.match(LINE_REGEX)[1] + '.jpg'
+  def determine_screenshot_path(example, temp = false)
+    path = 'spec/fixtures/ao_screenshots/' + example.location.match(PATH_REGEX)[1] + '_ao_screenshot_' +
+      example.location.match(LINE_REGEX)[1]
+    path += '-temp' if temp
+    path += '.jpg'
   end
 
   def create_folder(example)
