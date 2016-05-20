@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rmagick', '~> 2.15.4'
   s.add_dependency 'capybara-screenshot', '~> 1.0.12'
+  s.add_dependency 'poltergeist', '~> 1.9.0'
 
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'capybara', '~> 2.7.1'
-  s.add_development_dependency 'selenium-webdriver', '~> 2.53.0'
 end
