@@ -93,20 +93,20 @@ RSpec.describe ApplesAndOranges do
   end
 
   describe '#check_screenshot' do
-    it 'creates a screenshot if none exists and returns false' do |example|
+    it 'creates a screenshot if none exists and returns false' do
       test_page = File.absolute_path("spec/fixtures/pages/index-no-screenshot.html")
       visit('file://' + test_page)
       expect(@grocer.check_screenshot(page)).to eq false
       File.delete('spec/fixtures/ao_screenshots/apples_and_oranges_spec_ao_screenshot_99.jpg')
     end
 
-    it 'compares a screenshot if it exists and returns true when they match' do |example|
+    it 'compares a screenshot if it exists and returns true when they match' do
       test_page = File.absolute_path("spec/fixtures/pages/index-no-screenshot.html")
       visit('file://' + test_page)
       expect(@grocer.check_screenshot(page)).to eq true
     end
 
-    it 'compares a screenshot if it exists and returns false when they do not match' do |example|
+    it 'compares a screenshot if it exists and returns false when they do not match' do
       test_page = File.absolute_path("spec/fixtures/pages/index-screenshot.html")
       visit('file://' + test_page)
       expect(@grocer.check_screenshot(page)).to eq false
