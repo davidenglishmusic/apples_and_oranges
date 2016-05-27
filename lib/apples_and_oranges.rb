@@ -27,7 +27,7 @@ class ApplesAndOranges
   end
 
   def generate_screenshot(page, path)
-    page.save_screenshot(path)
+    page.save_screenshot(path, full: false)
   end
 
   def do_comparison(baseline_screenshot_path, example_screenshot_path)

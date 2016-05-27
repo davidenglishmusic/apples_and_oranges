@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'apples_and_oranges'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.summary     = 'Screenshot comparison testing'
   s.authors     = ['David English']
   s.email       = 'contactdavidenglish@gmail.com'
