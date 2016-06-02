@@ -14,9 +14,10 @@ class ApplesAndOranges
       generate_screenshot(page, temp_screenshot_path)
       result = do_comparison(screenshot_path, temp_screenshot_path)
       FileUtils.rm(temp_screenshot_path)
+      puts "\nscreenshots did not match\n" if !result
       result
     else
-      puts 'no screenshot found - generating...'
+      puts "\nno screenshot found - generating...\n"
       generate_screenshot(page, screenshot_path)
       false
     end
