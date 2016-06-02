@@ -6,6 +6,8 @@ class ApplesAndOranges
   LINE_REGEX = Regexp.new(':(.+):')
   FOLDER_REGEX = Regexp.new('^.*\/\s*')
 
+  FUZZY_THRESHOLD = 0.001
+
   def check_screenshot(page)
     call_location = caller_locations[0].to_s
     screenshot_path = determine_screenshot_path(call_location)
@@ -31,10 +33,23 @@ class ApplesAndOranges
     page.save_screenshot(path, full: false)
   end
 
-  def do_comparison(baseline_screenshot_path, example_screenshot_path)
+  def do_comparison(baseline_screenshot_path, example_screenshot_path, strict_comparison: false)
+    return compare_using_hexdigest(baseline_screenshot_path, example_screenshot_path) if strict_comparison
+    compare_using_channels(baseline_screenshot_path, example_screenshot_path)
+  end
+
+  def compare_using_hexdigest(baseline_screenshot_path, example_screenshot_path)
     apple = Magick::Image.read(example_screenshot_path).first.export_pixels.join
     orange = Magick::Image.read(baseline_screenshot_path).first.export_pixels.join
     Digest::MD5.hexdigest(apple) == Digest::MD5.hexdigest(orange)
+  end
+
+  def compare_using_channels(baseline_screenshot_path, example_screenshot_path)
+    apple = Magick::Image.read(example_screenshot_path).first
+    orange = Magick::Image.read(baseline_screenshot_path).first
+    diff_img, diff_metric = apple.compare_channel( orange, Magick::MeanSquaredErrorMetric )
+    return true if diff_metric < FUZZY_THRESHOLD
+    false
   end
 
   def determine_screenshot_path(call_path, app_path: nil, temp: false)
